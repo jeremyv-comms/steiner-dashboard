@@ -64,4 +64,102 @@
         .fb { background-image: url('https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400'); }
         .az { background-image: url('https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?w=400'); }
         .dr { background-color: #f4e4bc; color: #3d2b1f !important; border: 1px solid var(--burnt-orange); }
-        .rd { background
+        .rd { background-image: url('https://images.unsplash.com/photo-1611606063065-ee7946f0787a?w=400'); }
+        .radio { background: var(--warning-red); border: 2px solid white; height: 80px; justify-content: center; align-items: center; }
+
+        /* Task List Section */
+        .task-section {
+            background: rgba(40, 40, 40, 0.95); padding: 25px; border-radius: 8px; border: 1px solid var(--burnt-orange);
+        }
+        .task-input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .task-input-group input { flex: 1; background: #222; border: 1px solid var(--hickory); padding: 12px; color: var(--butcher-paper); border-radius: 5px; }
+        #todoList { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; list-style: none; padding: 0; }
+        #todoList li { background: var(--hickory); padding: 10px 15px; border-radius: 5px; display: flex; justify-content: space-between; border-left: 4px solid var(--burnt-orange); font-size: 0.9rem; }
+        .del-btn { color: var(--warning-red); cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="ticker-container">
+        <div class="ticker-wrap">
+            <div class="ticker-label">Lone Star Feed</div>
+            <div class="ticker" id="cbsTicker"><span class="ticker-item">Fetching Steiner Ranch updates...</span></div>
+        </div>
+    </div>
+
+    <div class="content-wrap">
+        <div class="top-row">
+            <div class="clock-card">
+                <div id="clock">00:00</div>
+                <div id="date">...</div>
+                <div style="margin-top: 15px; font-size: 1.5rem; color: var(--burnt-orange); font-weight: bold;">56°F</div>
+                <div style="font-size: 0.8rem; opacity: 0.7;">Steiner Ranch, TX</div>
+            </div>
+
+            <div class="forecast-card">
+                <h3 style="margin: 0 0 5px 0; color: var(--warning-red); text-transform: uppercase; font-size: 1rem;">Winter Storm Briefing: Jan 24-26</h3>
+                <table class="forecast-table">
+                    <tr><td style="color:var(--burnt-orange);font-weight:bold;">FRI</td><td>65° / 42°</td><td>Rain. Front hits at midnight.</td></tr>
+                    <tr><td style="color:var(--warning-red);font-weight:bold;">SAT</td><td>41° / 23°</td><td><b>Ice & Sleet Likely.</b> Dangerous Roads.</td></tr>
+                    <tr><td style="color:var(--warning-red);font-weight:bold;">SUN</td><td>30° / 19°</td><td>Hard Freeze. Wind Chill: 6°F.</td></tr>
+                </table>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                    <div style="background:#221812; padding:8px; font-size:0.75rem; border-left:3px solid var(--burnt-orange);"><b>Franklin Wait:</b> 2.5 Hours</div>
+                    <div style="background:#221812; padding:8px; font-size:0.75rem; border-left:3px solid var(--burnt-orange);"><b>Salt Lick Wait:</b> 45 Mins</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="link-grid">
+            <a href="https://facebook.com" class="card fb" target="_blank"><div class="card-overlay"></div><span>Facebook</span></a>
+            <a href="https://amazon.com" class="card az" target="_blank"><div class="card-overlay"></div><span>Amazon</span></a>
+            <a href="https://drudgereport.com" class="card dr" target="_blank"><span>DRUDGE REPORT</span></a>
+            <a href="https://reddit.com" class="card rd" target="_blank"><div class="card-overlay"></div><span>Reddit</span></a>
+        </div>
+
+        <a href="https://www.kut.org/player" target="_blank" class="card radio">
+            <span>📻 EMERGENCY RADIO (KUT 90.5)</span>
+        </a>
+
+        <div class="task-section">
+            <h3 style="margin: 0 0 15px 0; color: var(--burnt-orange); text-transform: uppercase; font-size: 1rem;">Winter Prep Tasks</h3>
+            <div class="task-input-group">
+                <input type="text" id="todoInput" placeholder="Add custom task...">
+                <button style="background:var(--burnt-orange); border:none; padding:0 20px; color:white; border-radius:5px; cursor:pointer; font-weight:bold;" onclick="addTodo()">ADD</button>
+            </div>
+            <ul id="todoList"></ul>
+        </div>
+    </div>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('txTasks')) || ["Drip faucets", "Cover hose bibs", "Gas for generator", "Check on neighbors"];
+        function renderTasks() {
+            document.getElementById('todoList').innerHTML = tasks.map((t, i) => `<li><span>${t}</span><span class="del-btn" onclick="removeTodo(${i})">×</span></li>`).join('');
+            localStorage.setItem('txTasks', JSON.stringify(tasks));
+        }
+        function addTodo() { const inp = document.getElementById('todoInput'); if(inp.value.trim()){ tasks.push(inp.value.trim()); inp.value=''; renderTasks(); } }
+        function removeTodo(i) { tasks.splice(i, 1); renderTasks(); }
+
+        async function fetchNews() {
+            try {
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://cbsaustin.com/news/local.rss')}`);
+                const data = await response.json();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+                const items = xmlDoc.querySelectorAll("item");
+                let html = "";
+                items.forEach((item, i) => { if (i < 8) html += `<a href="${item.querySelector("link").textContent}" class="ticker-item" target="_blank">★ ${item.querySelector("title").textContent}</a>`; });
+                document.getElementById('cbsTicker').innerHTML = html;
+            } catch (e) { document.getElementById('cbsTicker').innerHTML = "News offline."; }
+        }
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('date').textContent = now.toLocaleDateString([], {weekday: 'long', month: 'long', day: 'numeric'});
+        }
+
+        setInterval(updateTime, 1000); updateTime(); fetchNews(); renderTasks();
+    </script>
+</body>
+</html>
