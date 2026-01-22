@@ -9,146 +9,136 @@
         :root {
             --burnt-orange: #bf5700;
             --hickory: #3d2b1f;
-            --smoke: rgba(15, 15, 15, 0.92);
+            --smoke: rgba(15, 15, 15, 0.94);
             --butcher-paper: #f4e4bc;
             --warning-red: #e63946;
             --nfl-blue: #002244;
+            --spectrum-blue: #003057;
         }
 
         body {
-            font-family: 'Segoe UI', serif;
+            font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(var(--smoke), var(--smoke)), 
                         url('https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=1600');
             background-size: cover; background-attachment: fixed;
-            color: var(--butcher-paper); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+            color: var(--butcher-paper); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;
         }
 
-        /* News Ticker */
         .ticker-container { width: 100%; background: var(--hickory); border-bottom: 3px solid var(--burnt-orange); }
-        .ticker-wrap { width: 100%; overflow: hidden; height: 45px; display: flex; align-items: center; }
-        .ticker-label { background: var(--burnt-orange); padding: 0 25px; height: 100%; display: flex; align-items: center; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.8rem; }
-        .ticker { display: flex; white-space: nowrap; padding-left: 100%; animation: ticker 80s linear infinite; }
-        .ticker-item { padding: 0 40px; color: var(--butcher-paper); text-decoration: none; font-size: 1rem; font-style: italic; }
+        .ticker-wrap { width: 100%; overflow: hidden; height: 40px; display: flex; align-items: center; }
+        .ticker-label { background: var(--burnt-orange); padding: 0 20px; height: 100%; display: flex; align-items: center; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.75rem; }
+        .ticker { display: flex; white-space: nowrap; padding-left: 100%; animation: ticker 90s linear infinite; }
+        .ticker-item { padding: 0 30px; color: var(--butcher-paper); text-decoration: none; font-size: 0.95rem; }
         @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-        .content-wrap { width: 95%; max-width: 1100px; display: flex; flex-direction: column; gap: 20px; padding: 25px 0; }
+        .content-wrap { width: 95%; max-width: 1100px; padding: 20px 0; display: flex; flex-direction: column; gap: 20px; }
 
-        /* Top Row Cards */
-        .top-row { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
-        .clock-card {
-            background: rgba(61, 43, 31, 0.95); padding: 25px; border-radius: 8px; border: 2px solid var(--burnt-orange);
-            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        .top-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+        .card-base { background: rgba(30, 30, 30, 0.95); border-radius: 8px; border: 1px solid #444; padding: 20px; }
+
+        #clock { font-size: 3.5rem; font-weight: bold; color: var(--burnt-orange); margin: 0; }
+        .forecast-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        .forecast-table td { padding: 6px; border-bottom: 1px solid #333; }
+
+        /* NFL Section */
+        .playoff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .game-card { background: #221812; padding: 12px; border-radius: 6px; border-left: 5px solid var(--nfl-blue); }
+
+        /* Large Link Tiles */
+        .link-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        .tile {
+            position: relative; height: 100px; border-radius: 8px; border: 1px solid #555;
+            display: flex; align-items: flex-end; padding: 12px; text-decoration: none; color: white;
+            font-weight: bold; background-size: cover; background-position: center; transition: 0.2s; overflow: hidden;
         }
-        #clock { font-size: 4rem; font-weight: bold; color: var(--burnt-orange); margin: 0; }
-        #date { font-size: 1.1rem; opacity: 0.8; text-transform: uppercase; }
-
-        .forecast-card { background: rgba(20, 20, 20, 0.95); padding: 20px; border-radius: 8px; border-left: 10px solid var(--warning-red); }
-        .forecast-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
-        .forecast-table td { padding: 8px; border-bottom: 1px solid #333; font-size: 0.9rem; }
-
-        /* NFL & Hearing Section */
-        .updates-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
-        .update-box { background: rgba(34, 24, 18, 0.95); padding: 15px; border-radius: 8px; border: 1px solid #444; }
-
-        /* Link Grid (Large Tiles) */
-        .link-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .card {
-            position: relative; height: 110px; border-radius: 8px; border: 1px solid #444;
-            display: flex; align-items: flex-end; padding: 15px; text-decoration: none; color: white; 
-            font-weight: bold; background-size: cover; background-position: center; transition: 0.3s; overflow: hidden;
-        }
-        .card:hover { transform: translateY(-3px); border-color: var(--burnt-orange); }
-        .card-overlay { position: absolute; inset: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); z-index: 1; }
-        .card span { z-index: 2; text-shadow: 2px 2px 4px rgba(0,0,0,1); text-transform: uppercase; font-size: 0.9rem; }
+        .tile:hover { transform: translateY(-3px); border-color: var(--burnt-orange); }
+        .tile-overlay { position: absolute; inset: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); z-index: 1; }
+        .tile span { z-index: 2; text-shadow: 1px 1px 3px black; text-transform: uppercase; font-size: 0.8rem; }
 
         .fb { background-image: url('https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400'); }
         .az { background-image: url('https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?w=400'); }
         .rd { background-image: url('https://images.unsplash.com/photo-1611606063065-ee7946f0787a?w=400'); }
-        .dr { background-color: #f4e4bc; color: #3d2b1f !important; }
+        .dr { background: #f4e4bc; color: #3d2b1f !important; }
+        .spec { background: var(--spectrum-blue); }
         .outage { background: #000; border: 2px solid var(--warning-red); }
 
-        /* Task List */
-        .task-section { background: rgba(40, 40, 40, 0.95); padding: 25px; border-radius: 8px; border: 1px solid var(--burnt-orange); }
-        #todoList { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; list-style: none; padding: 0; }
-        #todoList li { background: var(--hickory); padding: 10px 15px; border-radius: 5px; display: flex; justify-content: space-between; border-left: 4px solid var(--burnt-orange); }
+        .task-section { border: 1px solid var(--burnt-orange); }
+        #todoList { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; list-style: none; padding: 0; }
+        #todoList li { background: var(--hickory); padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
     <div class="ticker-container">
         <div class="ticker-wrap">
-            <div class="ticker-label">Lone Star Local</div>
-            <div class="ticker" id="cbsTicker"><span class="ticker-item">Monitoring Jack Smith Testimony...</span></div>
+            <div class="ticker-label">LONE STAR FEED</div>
+            <div class="ticker" id="cbsTicker"><span class="ticker-item">Fetching Steiner Ranch updates...</span></div>
         </div>
     </div>
 
     <div class="content-wrap">
-        <div class="top-row">
-            <div class="clock-card">
+        <div class="top-grid">
+            <div class="card-base" style="text-align:center; border: 2px solid var(--burnt-orange);">
                 <div id="clock">00:00</div>
-                <div id="date">...</div>
-                <div style="margin-top: 15px; font-size: 1.5rem; color: var(--burnt-orange); font-weight: bold;">68°F</div>
-                <div style="font-size: 0.8rem; opacity: 0.7;">Steiner Ranch, TX</div>
+                <div id="date" style="text-transform:uppercase; font-size:0.9rem; opacity:0.8;">...</div>
+                <div style="margin-top:15px; font-size:1.8rem; color:var(--burnt-orange); font-weight:bold;">68°F</div>
             </div>
 
-            <div class="forecast-card">
-                <h3 style="margin: 0 0 5px 0; color: var(--warning-red); text-transform: uppercase; font-size: 0.9rem;">Winter Storm Prep: Arctic Front Friday</h3>
+            <div class="card-base" style="border-left: 10px solid var(--warning-red);">
+                <h3 style="margin:0; font-size:0.9rem; color:var(--warning-red); text-transform:uppercase;">Winter Storm Briefing</h3>
                 <table class="forecast-table">
-                    <tr><td style="color:var(--burnt-orange);font-weight:bold;">FRI</td><td>72° / 44°</td><td>Scattered showers. Front arrives late PM.</td></tr>
-                    <tr><td style="color:var(--warning-red);font-weight:bold;">SAT</td><td>38° / 24°</td><td><b>Icing/Sleet Likely.</b> Stay off the roads.</td></tr>
-                    <tr><td style="color:var(--warning-red);font-weight:bold;">SUN</td><td>31° / 18°</td><td>Hard Freeze. Wind chills near 0°F.</td></tr>
+                    <tr><td style="color:var(--burnt-orange);"><b>FRI</b></td><td>72° / 44°</td><td>Arctic front hits tonight. Drip pipes by 10 PM.</td></tr>
+                    <tr><td style="color:var(--warning-red);"><b>SAT</b></td><td>38° / 24°</td><td><b>ICE/SLEET.</b> Dangerous driving on 620/2222.</td></tr>
+                    <tr><td style="color:var(--warning-red);"><b>SUN</b></td><td>31° / 18°</td><td>Hard Freeze. Perfect for Playoff Football.</td></tr>
                 </table>
-                <div style="margin-top:10px; font-size:0.75rem;">
-                    <span style="color:var(--burnt-orange);">★</span> <strong>Franklin BBQ Wait:</strong> 2.5 hrs | <strong>Salt Lick:</strong> 45 mins
+            </div>
+        </div>
+
+        <div class="card-base">
+            <h3 style="margin:0 0 10px 0; font-size:1rem; color:var(--burnt-orange); text-transform:uppercase;">🏈 Championship Sunday (Jan 25)</h3>
+            <div class="playoff-grid">
+                <div class="game-card">
+                    <div style="font-weight:bold; margin-bottom:4px;">AFC: Patriots @ Broncos</div>
+                    <div style="font-size:0.8rem; opacity:0.8;">2:00 PM CST | CBS / Paramount+</div>
+                </div>
+                <div class="game-card" style="border-left-color: #004c97;">
+                    <div style="font-weight:bold; margin-bottom:4px;">NFC: Rams @ Seahawks</div>
+                    <div style="font-size:0.8rem; opacity:0.8;">5:30 PM CST | FOX</div>
                 </div>
             </div>
         </div>
 
-        <div class="updates-grid">
-            <div class="update-box">
-                <h3 style="margin:0 0 10px 0; color:var(--burnt-orange); text-transform:uppercase; font-size:0.85rem;">🏈 NFL Conference Championships (Sun 1/25)</h3>
-                <div style="display:flex; justify-content:space-between; font-size:0.9rem; border-bottom:1px solid #444; padding-bottom:5px;">
-                    <span>Patriots @ Broncos (CBS)</span> <span>2:00 PM</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; font-size:0.9rem; padding-top:5px;">
-                    <span>Rams @ Seahawks (FOX)</span> <span>5:30 PM</span>
-                </div>
-            </div>
-            <div class="update-box" style="border-left:4px solid var(--warning-red);">
-                <h3 style="margin:0 0 5px 0; color:var(--warning-red); text-transform:uppercase; font-size:0.85rem;">⚖️ Hearing Tracker</h3>
-                <div style="font-size:0.8rem;" id="hearingStatus">
-                    <strong>Current:</strong> Chip Roy (TX) questioning Smith on metadata subpoenas.
-                </div>
-            </div>
+        <div class="card-base" style="border-left: 4px solid var(--warning-red);">
+            <h3 style="margin:0; font-size:0.9rem; color:var(--warning-red); text-transform:uppercase;">⚖️ Jack Smith Hearing Tracker</h3>
+            <p style="font-size:0.85rem; margin:10px 0 0 0;">
+                <b>Live Status:</b> Resumed. TX Reps Chip Roy (R) and Jasmine Crockett (D) in rotation. 
+                <a href="https://www.youtube.com/watch?v=fXvU7z8jIqE" target="_blank" style="color:var(--burnt-orange); text-decoration:none;">[Watch Live]</a>
+            </p>
         </div>
 
         <div class="link-grid">
-            <a href="https://facebook.com" class="card fb" target="_blank"><div class="card-overlay"></div><span>Facebook</span></a>
-            <a href="https://amazon.com" class="card az" target="_blank"><div class="card-overlay"></div><span>Amazon</span></a>
-            <a href="https://drudgereport.com" class="card dr" target="_blank"><span>DRUDGE REPORT</span></a>
-            <a href="https://reddit.com" class="card rd" target="_blank"><div class="card-overlay"></div><span>Reddit</span></a>
-            <a href="https://outagemap.austinenergy.com" class="card outage" target="_blank"><div class="card-overlay"></div><span>⚡ Outage Map</span></a>
+            <a href="https://facebook.com" class="tile fb" target="_blank"><div class="tile-overlay"></div><span>Facebook</span></a>
+            <a href="https://amazon.com" class="tile az" target="_blank"><div class="tile-overlay"></div><span>Amazon</span></a>
+            <a href="https://drudgereport.com" class="tile dr" target="_blank"><span>DRUDGE REPORT</span></a>
+            <a href="https://reddit.com" class="tile rd" target="_blank"><div class="tile-overlay"></div><span>Reddit</span></a>
+            <a href="https://www.spectrum.net/support/tv/troubleshooting-your-spectrum-services-after-outage" class="tile spec" target="_blank"><div class="tile-overlay"></div><span>📡 Spectrum Outage</span></a>
+            <a href="https://outagemap.austinenergy.com" class="tile outage" target="_blank"><div class="tile-overlay"></div><span>⚡ Austin Energy</span></a>
         </div>
 
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-            <a href="https://www.kut.org/player" target="_blank" class="card" style="height:60px; background:var(--warning-red); justify-content:center;"><span>📻 KUT 90.5 LIVE</span></a>
-            <a href="https://www.youtube.com/watch?v=fXvU7z8jIqE" target="_blank" class="card" style="height:60px; background:#444; justify-content:center;"><span>📺 WATCH HEARING LIVE</span></a>
-        </div>
-
-        <div class="task-section">
-            <h3 style="margin: 0 0 15px 0; color: var(--burnt-orange); text-transform: uppercase; font-size: 1rem;">Winter Prep Checklist</h3>
+        <div class="card-base task-section">
+            <h3 style="margin: 0 0 15px 0; color: var(--burnt-orange); text-transform: uppercase; font-size: 0.9rem;">Winter Prep Checklist</h3>
             <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <input type="text" id="todoInput" placeholder="Add custom task..." style="flex:1; background:#222; border:1px solid #444; padding:12px; color:white; border-radius:5px;">
-                <button onclick="addTodo()" style="background:var(--burnt-orange); border:none; padding:0 20px; color:white; border-radius:5px; cursor:pointer; font-weight:bold;">ADD</button>
+                <input type="text" id="todoInput" placeholder="Add custom task..." style="flex:1; background:#222; border:1px solid #444; padding:10px; color:white; border-radius:4px;">
+                <button onclick="addTodo()" style="background:var(--burnt-orange); border:none; padding:0 15px; color:white; border-radius:4px; cursor:pointer; font-weight:bold;">ADD</button>
             </div>
             <ul id="todoList"></ul>
         </div>
     </div>
 
     <script>
-        let tasks = JSON.parse(localStorage.getItem('txTasks')) || ["Drip faucets", "Cover hose bibs", "Gas for generator", "Bring in sensitive plants"];
+        let tasks = JSON.parse(localStorage.getItem('txTasks')) || ["Drip faucets tonight", "Cover hose bibs", "Gas for generator", "Reheat Brisket"];
         function renderTasks() {
-            document.getElementById('todoList').innerHTML = tasks.map((t, i) => `<li><span>${t}</span><span style="color:red; cursor:pointer;" onclick="removeTodo(${i})">×</span></li>`).join('');
+            document.getElementById('todoList').innerHTML = tasks.map((t, i) => `<li><span>${t}</span><span style="color:var(--warning-red); cursor:pointer;" onclick="removeTodo(${i})">×</span></li>`).join('');
             localStorage.setItem('txTasks', JSON.stringify(tasks));
         }
         function addTodo() { const inp = document.getElementById('todoInput'); if(inp.value.trim()){ tasks.push(inp.value.trim()); inp.value=''; renderTasks(); } }
