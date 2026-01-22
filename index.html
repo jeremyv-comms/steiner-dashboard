@@ -9,7 +9,7 @@
         :root {
             --burnt-orange: #bf5700;
             --hickory: #3d2b1f;
-            --smoke: rgba(15, 15, 15, 0.94);
+            --smoke: rgba(15, 15, 15, 0.96);
             --butcher-paper: #f4e4bc;
             --warning-red: #e63946;
             --nfl-blue: #002244;
@@ -21,7 +21,7 @@
             background: linear-gradient(var(--smoke), var(--smoke)), 
                         url('https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=1600');
             background-size: cover; background-attachment: fixed;
-            color: var(--butcher-paper); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;
+            color: var(--butcher-paper); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
 
         .ticker-container { width: 100%; background: var(--hickory); border-bottom: 3px solid var(--burnt-orange); }
@@ -34,17 +34,20 @@
         .content-wrap { width: 95%; max-width: 1100px; padding: 20px 0; display: flex; flex-direction: column; gap: 20px; }
 
         .top-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
-        .card-base { background: rgba(30, 30, 30, 0.95); border-radius: 8px; border: 1px solid #444; padding: 20px; }
+        .card-base { background: rgba(30, 30, 30, 0.95); border-radius: 8px; border: 1px solid #444; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 
         #clock { font-size: 3.5rem; font-weight: bold; color: var(--burnt-orange); margin: 0; }
-        .forecast-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        .forecast-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
         .forecast-table td { padding: 6px; border-bottom: 1px solid #333; }
+
+        /* Traffic Map Section */
+        .map-container { position: relative; width: 100%; height: 280px; border-radius: 6px; overflow: hidden; margin-top: 10px; border: 1px solid #555; }
 
         /* NFL Section */
         .playoff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
         .game-card { background: #221812; padding: 12px; border-radius: 6px; border-left: 5px solid var(--nfl-blue); }
 
-        /* Large Link Tiles */
+        /* Tiles */
         .link-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
         .tile {
             position: relative; height: 100px; border-radius: 8px; border: 1px solid #555;
@@ -53,26 +56,24 @@
         }
         .tile:hover { transform: translateY(-3px); border-color: var(--burnt-orange); }
         .tile-overlay { position: absolute; inset: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); z-index: 1; }
-        .tile span { z-index: 2; text-shadow: 1px 1px 3px black; text-transform: uppercase; font-size: 0.8rem; }
+        .tile span { z-index: 2; text-shadow: 1px 1px 3px black; text-transform: uppercase; font-size: 0.75rem; }
 
         .fb { background-image: url('https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400'); }
         .az { background-image: url('https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?w=400'); }
-        .rd { background-image: url('https://images.unsplash.com/photo-1611606063065-ee7946f0787a?w=400'); }
         .dr { background: #f4e4bc; color: #3d2b1f !important; }
         .spec { background: var(--spectrum-blue); }
         .outage { background: #000; border: 2px solid var(--warning-red); }
 
-        .task-section { border: 1px solid var(--burnt-orange); }
         #todoList { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; list-style: none; padding: 0; }
-        #todoList li { background: var(--hickory); padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; font-size: 0.9rem; }
+        #todoList li { background: var(--hickory); padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; font-size: 0.85rem; border-left: 4px solid var(--burnt-orange); }
     </style>
 </head>
 <body>
 
     <div class="ticker-container">
         <div class="ticker-wrap">
-            <div class="ticker-label">LONE STAR FEED</div>
-            <div class="ticker" id="cbsTicker"><span class="ticker-item">Fetching Steiner Ranch updates...</span></div>
+            <div class="ticker-label">LIVE UPDATES</div>
+            <div class="ticker" id="cbsTicker"><span class="ticker-item">Monitoring Steiner Ranch conditions and RM 620 traffic...</span></div>
         </div>
     </div>
 
@@ -80,17 +81,32 @@
         <div class="top-grid">
             <div class="card-base" style="text-align:center; border: 2px solid var(--burnt-orange);">
                 <div id="clock">00:00</div>
-                <div id="date" style="text-transform:uppercase; font-size:0.9rem; opacity:0.8;">...</div>
-                <div style="margin-top:15px; font-size:1.8rem; color:var(--burnt-orange); font-weight:bold;">68°F</div>
+                <div id="date" style="text-transform:uppercase; font-size:0.8rem; opacity:0.8;">...</div>
+                <div style="margin-top:10px; font-size:1.8rem; color:var(--burnt-orange); font-weight:bold;">68°F</div>
             </div>
 
             <div class="card-base" style="border-left: 10px solid var(--warning-red);">
-                <h3 style="margin:0; font-size:0.9rem; color:var(--warning-red); text-transform:uppercase;">Winter Storm Briefing</h3>
+                <h3 style="margin:0; font-size:0.9rem; color:var(--warning-red); text-transform:uppercase;">🚨 Winter Storm Briefing</h3>
                 <table class="forecast-table">
-                    <tr><td style="color:var(--burnt-orange);"><b>FRI</b></td><td>72° / 44°</td><td>Arctic front hits tonight. Drip pipes by 10 PM.</td></tr>
-                    <tr><td style="color:var(--warning-red);"><b>SAT</b></td><td>38° / 24°</td><td><b>ICE/SLEET.</b> Dangerous driving on 620/2222.</td></tr>
-                    <tr><td style="color:var(--warning-red);"><b>SUN</b></td><td>31° / 18°</td><td>Hard Freeze. Perfect for Playoff Football.</td></tr>
+                    <tr><td style="color:var(--burnt-orange);"><b>FRI</b></td><td>72° / 44°</td><td>Front arrives ~11PM. Drip faucets tonight.</td></tr>
+                    <tr><td style="color:var(--warning-red);"><b>SAT</b></td><td>38° / 24°</td><td><b>ICY ROADS.</b> High risk on 620/2222 hills.</td></tr>
+                    <tr><td style="color:var(--warning-red);"><b>SUN</b></td><td>31° / 18°</td><td>Arctic Blast. Perfect for Playoff Football.</td></tr>
                 </table>
+            </div>
+        </div>
+
+        <div class="card-base">
+            <h3 style="margin:0 0 10px 0; font-size:0.9rem; color:var(--burnt-orange); text-transform:uppercase;">🚦 Egress Monitor: RM 620 @ Quinlan Park</h3>
+            <div class="map-container">
+                <iframe 
+                    width="100%" height="100%" style="border:0;" loading="lazy" allowfullscreen 
+                    referrerpolicy="no-referrer-when-downgrade"
+                    src="https://support.google.com/maps/thread/360225263/action-required-secure-unrestricted-api-keys-immediately-to-avoid-extra-billing-charges?hl=en#:~:text=Google%20Maps%20Platform%20customers%20are,charges%20and%20subsequent%20account%20suspension.?key=YOUR_API_KEY&q=30.3857,-97.9100&zoom=14">
+                </iframe>
+            </div>
+            <div style="margin-top:10px; font-size:0.8rem; opacity:0.8; display:flex; justify-content:space-between;">
+                <span>View: Main Steiner Ranch Entrance/Exit</span>
+                <a href="https://drivetexas.org" target="_blank" style="color:#ffcc00; text-decoration:none; font-weight:bold;">OPEN TXDOT ROAD CONDITIONS →</a>
             </div>
         </div>
 
@@ -109,10 +125,10 @@
         </div>
 
         <div class="card-base" style="border-left: 4px solid var(--warning-red);">
-            <h3 style="margin:0; font-size:0.9rem; color:var(--warning-red); text-transform:uppercase;">⚖️ Jack Smith Hearing Tracker</h3>
-            <p style="font-size:0.85rem; margin:10px 0 0 0;">
-                <b>Live Status:</b> Resumed. TX Reps Chip Roy (R) and Jasmine Crockett (D) in rotation. 
-                <a href="https://www.youtube.com/watch?v=fXvU7z8jIqE" target="_blank" style="color:var(--burnt-orange); text-decoration:none;">[Watch Live]</a>
+            <h3 style="margin:0; font-size:0.85rem; color:var(--warning-red); text-transform:uppercase;">⚖️ Jack Smith Public Hearing</h3>
+            <p style="font-size:0.8rem; margin:10px 0 0 0;">
+                <b>Live Status:</b> Former Special Counsel Jack Smith defending 2020 election and documents probes before House Judiciary Committee.
+                <a href="https://www.youtube.com/watch?v=fXvU7z8jIqE" target="_blank" style="color:var(--burnt-orange); text-decoration:none; font-weight:bold; margin-left:10px;">[Watch Live]</a>
             </p>
         </div>
 
@@ -120,13 +136,12 @@
             <a href="https://facebook.com" class="tile fb" target="_blank"><div class="tile-overlay"></div><span>Facebook</span></a>
             <a href="https://amazon.com" class="tile az" target="_blank"><div class="tile-overlay"></div><span>Amazon</span></a>
             <a href="https://drudgereport.com" class="tile dr" target="_blank"><span>DRUDGE REPORT</span></a>
-            <a href="https://reddit.com" class="tile rd" target="_blank"><div class="tile-overlay"></div><span>Reddit</span></a>
-            <a href="https://www.spectrum.net/support/tv/troubleshooting-your-spectrum-services-after-outage" class="tile spec" target="_blank"><div class="tile-overlay"></div><span>📡 Spectrum Outage</span></a>
-            <a href="https://outagemap.austinenergy.com" class="tile outage" target="_blank"><div class="tile-overlay"></div><span>⚡ Austin Energy</span></a>
+            <a href="https://www.spectrum.net/support/tv/troubleshooting-your-spectrum-services-after-outage" class="tile spec" target="_blank"><span>📡 Spectrum Status</span></a>
+            <a href="https://outagemap.austinenergy.com" class="tile outage" target="_blank"><span>⚡ Austin Energy</span></a>
         </div>
 
-        <div class="card-base task-section">
-            <h3 style="margin: 0 0 15px 0; color: var(--burnt-orange); text-transform: uppercase; font-size: 0.9rem;">Winter Prep Checklist</h3>
+        <div class="card-base">
+            <h3 style="margin: 0 0 15px 0; color: var(--burnt-orange); text-transform: uppercase; font-size: 0.9rem;">Winter Prep Tasks</h3>
             <div style="display:flex; gap:10px; margin-bottom:15px;">
                 <input type="text" id="todoInput" placeholder="Add custom task..." style="flex:1; background:#222; border:1px solid #444; padding:10px; color:white; border-radius:4px;">
                 <button onclick="addTodo()" style="background:var(--burnt-orange); border:none; padding:0 15px; color:white; border-radius:4px; cursor:pointer; font-weight:bold;">ADD</button>
@@ -136,7 +151,7 @@
     </div>
 
     <script>
-        let tasks = JSON.parse(localStorage.getItem('txTasks')) || ["Drip faucets tonight", "Cover hose bibs", "Gas for generator", "Reheat Brisket"];
+        let tasks = JSON.parse(localStorage.getItem('txTasks')) || ["Drip faucets tonight", "Cover hose bibs", "Check Generator Oil", "NFL Sunday Snacks"];
         function renderTasks() {
             document.getElementById('todoList').innerHTML = tasks.map((t, i) => `<li><span>${t}</span><span style="color:var(--warning-red); cursor:pointer;" onclick="removeTodo(${i})">×</span></li>`).join('');
             localStorage.setItem('txTasks', JSON.stringify(tasks));
