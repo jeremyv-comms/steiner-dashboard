@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Steiner Ranch Command</title>
+    <title>Steiner Ranch Command Center</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⭐</text></svg>">
     <style>
         :root {
             --burnt-orange: #bf5700;
             --hickory: #3d2b1f;
-            --smoke: rgba(15, 15, 15, 0.9);
+            --smoke: rgba(15, 15, 15, 0.92);
             --butcher-paper: #f4e4bc;
             --warning-red: #e63946;
+            --nfl-blue: #002244;
         }
 
         body {
@@ -32,7 +33,7 @@
 
         .content-wrap { width: 95%; max-width: 1100px; display: flex; flex-direction: column; gap: 20px; padding: 25px 0; }
 
-        /* Header Info */
+        /* Top Row Cards */
         .top-row { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
         .clock-card {
             background: rgba(61, 43, 31, 0.95); padding: 25px; border-radius: 8px; border: 2px solid var(--burnt-orange);
@@ -41,49 +42,43 @@
         #clock { font-size: 4rem; font-weight: bold; color: var(--burnt-orange); margin: 0; }
         #date { font-size: 1.1rem; opacity: 0.8; text-transform: uppercase; }
 
-        .forecast-card { background: rgba(20, 20, 20, 0.9); padding: 20px; border-radius: 8px; border-left: 10px solid var(--warning-red); }
+        .forecast-card { background: rgba(20, 20, 20, 0.95); padding: 20px; border-radius: 8px; border-left: 10px solid var(--warning-red); }
         .forecast-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
         .forecast-table td { padding: 8px; border-bottom: 1px solid #333; font-size: 0.9rem; }
 
-        /* Large Grid Tiles */
-        .link-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 15px; margin: 10px 0;
-        }
+        /* NFL & Hearing Section */
+        .updates-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
+        .update-box { background: rgba(34, 24, 18, 0.95); padding: 15px; border-radius: 8px; border: 1px solid #444; }
+
+        /* Link Grid (Large Tiles) */
+        .link-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .card {
-            position: relative; height: 120px; border-radius: 8px; border: 1px solid #444;
-            display: flex; align-items: flex-end; padding: 15px;
-            text-decoration: none; color: white; font-weight: bold;
-            background-size: cover; background-position: center; transition: 0.3s;
-            overflow: hidden;
+            position: relative; height: 110px; border-radius: 8px; border: 1px solid #444;
+            display: flex; align-items: flex-end; padding: 15px; text-decoration: none; color: white; 
+            font-weight: bold; background-size: cover; background-position: center; transition: 0.3s; overflow: hidden;
         }
         .card:hover { transform: translateY(-3px); border-color: var(--burnt-orange); }
-        .card-overlay { position: absolute; inset: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); z-index: 1; }
-        .card span { z-index: 2; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); text-transform: uppercase; }
+        .card-overlay { position: absolute; inset: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); z-index: 1; }
+        .card span { z-index: 2; text-shadow: 2px 2px 4px rgba(0,0,0,1); text-transform: uppercase; font-size: 0.9rem; }
 
         .fb { background-image: url('https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400'); }
         .az { background-image: url('https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?w=400'); }
-        .dr { background-color: #f4e4bc; color: #3d2b1f !important; border: 1px solid var(--burnt-orange); }
         .rd { background-image: url('https://images.unsplash.com/photo-1611606063065-ee7946f0787a?w=400'); }
-        .radio { background: var(--warning-red); border: 2px solid white; height: 80px; justify-content: center; align-items: center; }
+        .dr { background-color: #f4e4bc; color: #3d2b1f !important; }
+        .outage { background: #000; border: 2px solid var(--warning-red); }
 
-        /* Task List Section */
-        .task-section {
-            background: rgba(40, 40, 40, 0.95); padding: 25px; border-radius: 8px; border: 1px solid var(--burnt-orange);
-        }
-        .task-input-group { display: flex; gap: 10px; margin-bottom: 15px; }
-        .task-input-group input { flex: 1; background: #222; border: 1px solid var(--hickory); padding: 12px; color: var(--butcher-paper); border-radius: 5px; }
-        #todoList { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; list-style: none; padding: 0; }
-        #todoList li { background: var(--hickory); padding: 10px 15px; border-radius: 5px; display: flex; justify-content: space-between; border-left: 4px solid var(--burnt-orange); font-size: 0.9rem; }
-        .del-btn { color: var(--warning-red); cursor: pointer; font-weight: bold; }
+        /* Task List */
+        .task-section { background: rgba(40, 40, 40, 0.95); padding: 25px; border-radius: 8px; border: 1px solid var(--burnt-orange); }
+        #todoList { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; list-style: none; padding: 0; }
+        #todoList li { background: var(--hickory); padding: 10px 15px; border-radius: 5px; display: flex; justify-content: space-between; border-left: 4px solid var(--burnt-orange); }
     </style>
 </head>
 <body>
 
     <div class="ticker-container">
         <div class="ticker-wrap">
-            <div class="ticker-label">Lone Star Feed</div>
-            <div class="ticker" id="cbsTicker"><span class="ticker-item">Fetching Steiner Ranch updates...</span></div>
+            <div class="ticker-label">Lone Star Local</div>
+            <div class="ticker" id="cbsTicker"><span class="ticker-item">Monitoring Jack Smith Testimony...</span></div>
         </div>
     </div>
 
@@ -92,20 +87,37 @@
             <div class="clock-card">
                 <div id="clock">00:00</div>
                 <div id="date">...</div>
-                <div style="margin-top: 15px; font-size: 1.5rem; color: var(--burnt-orange); font-weight: bold;">56°F</div>
+                <div style="margin-top: 15px; font-size: 1.5rem; color: var(--burnt-orange); font-weight: bold;">68°F</div>
                 <div style="font-size: 0.8rem; opacity: 0.7;">Steiner Ranch, TX</div>
             </div>
 
             <div class="forecast-card">
-                <h3 style="margin: 0 0 5px 0; color: var(--warning-red); text-transform: uppercase; font-size: 1rem;">Winter Storm Briefing: Jan 24-26</h3>
+                <h3 style="margin: 0 0 5px 0; color: var(--warning-red); text-transform: uppercase; font-size: 0.9rem;">Winter Storm Prep: Arctic Front Friday</h3>
                 <table class="forecast-table">
-                    <tr><td style="color:var(--burnt-orange);font-weight:bold;">FRI</td><td>65° / 42°</td><td>Rain. Front hits at midnight.</td></tr>
-                    <tr><td style="color:var(--warning-red);font-weight:bold;">SAT</td><td>41° / 23°</td><td><b>Ice & Sleet Likely.</b> Dangerous Roads.</td></tr>
-                    <tr><td style="color:var(--warning-red);font-weight:bold;">SUN</td><td>30° / 19°</td><td>Hard Freeze. Wind Chill: 6°F.</td></tr>
+                    <tr><td style="color:var(--burnt-orange);font-weight:bold;">FRI</td><td>72° / 44°</td><td>Scattered showers. Front arrives late PM.</td></tr>
+                    <tr><td style="color:var(--warning-red);font-weight:bold;">SAT</td><td>38° / 24°</td><td><b>Icing/Sleet Likely.</b> Stay off the roads.</td></tr>
+                    <tr><td style="color:var(--warning-red);font-weight:bold;">SUN</td><td>31° / 18°</td><td>Hard Freeze. Wind chills near 0°F.</td></tr>
                 </table>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-                    <div style="background:#221812; padding:8px; font-size:0.75rem; border-left:3px solid var(--burnt-orange);"><b>Franklin Wait:</b> 2.5 Hours</div>
-                    <div style="background:#221812; padding:8px; font-size:0.75rem; border-left:3px solid var(--burnt-orange);"><b>Salt Lick Wait:</b> 45 Mins</div>
+                <div style="margin-top:10px; font-size:0.75rem;">
+                    <span style="color:var(--burnt-orange);">★</span> <strong>Franklin BBQ Wait:</strong> 2.5 hrs | <strong>Salt Lick:</strong> 45 mins
+                </div>
+            </div>
+        </div>
+
+        <div class="updates-grid">
+            <div class="update-box">
+                <h3 style="margin:0 0 10px 0; color:var(--burnt-orange); text-transform:uppercase; font-size:0.85rem;">🏈 NFL Conference Championships (Sun 1/25)</h3>
+                <div style="display:flex; justify-content:space-between; font-size:0.9rem; border-bottom:1px solid #444; padding-bottom:5px;">
+                    <span>Patriots @ Broncos (CBS)</span> <span>2:00 PM</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.9rem; padding-top:5px;">
+                    <span>Rams @ Seahawks (FOX)</span> <span>5:30 PM</span>
+                </div>
+            </div>
+            <div class="update-box" style="border-left:4px solid var(--warning-red);">
+                <h3 style="margin:0 0 5px 0; color:var(--warning-red); text-transform:uppercase; font-size:0.85rem;">⚖️ Hearing Tracker</h3>
+                <div style="font-size:0.8rem;" id="hearingStatus">
+                    <strong>Current:</strong> Chip Roy (TX) questioning Smith on metadata subpoenas.
                 </div>
             </div>
         </div>
@@ -115,26 +127,28 @@
             <a href="https://amazon.com" class="card az" target="_blank"><div class="card-overlay"></div><span>Amazon</span></a>
             <a href="https://drudgereport.com" class="card dr" target="_blank"><span>DRUDGE REPORT</span></a>
             <a href="https://reddit.com" class="card rd" target="_blank"><div class="card-overlay"></div><span>Reddit</span></a>
+            <a href="https://outagemap.austinenergy.com" class="card outage" target="_blank"><div class="card-overlay"></div><span>⚡ Outage Map</span></a>
         </div>
 
-        <a href="https://www.kut.org/player" target="_blank" class="card radio">
-            <span>📻 EMERGENCY RADIO (KUT 90.5)</span>
-        </a>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+            <a href="https://www.kut.org/player" target="_blank" class="card" style="height:60px; background:var(--warning-red); justify-content:center;"><span>📻 KUT 90.5 LIVE</span></a>
+            <a href="https://www.youtube.com/watch?v=fXvU7z8jIqE" target="_blank" class="card" style="height:60px; background:#444; justify-content:center;"><span>📺 WATCH HEARING LIVE</span></a>
+        </div>
 
         <div class="task-section">
-            <h3 style="margin: 0 0 15px 0; color: var(--burnt-orange); text-transform: uppercase; font-size: 1rem;">Winter Prep Tasks</h3>
-            <div class="task-input-group">
-                <input type="text" id="todoInput" placeholder="Add custom task...">
-                <button style="background:var(--burnt-orange); border:none; padding:0 20px; color:white; border-radius:5px; cursor:pointer; font-weight:bold;" onclick="addTodo()">ADD</button>
+            <h3 style="margin: 0 0 15px 0; color: var(--burnt-orange); text-transform: uppercase; font-size: 1rem;">Winter Prep Checklist</h3>
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <input type="text" id="todoInput" placeholder="Add custom task..." style="flex:1; background:#222; border:1px solid #444; padding:12px; color:white; border-radius:5px;">
+                <button onclick="addTodo()" style="background:var(--burnt-orange); border:none; padding:0 20px; color:white; border-radius:5px; cursor:pointer; font-weight:bold;">ADD</button>
             </div>
             <ul id="todoList"></ul>
         </div>
     </div>
 
     <script>
-        let tasks = JSON.parse(localStorage.getItem('txTasks')) || ["Drip faucets", "Cover hose bibs", "Gas for generator", "Check on neighbors"];
+        let tasks = JSON.parse(localStorage.getItem('txTasks')) || ["Drip faucets", "Cover hose bibs", "Gas for generator", "Bring in sensitive plants"];
         function renderTasks() {
-            document.getElementById('todoList').innerHTML = tasks.map((t, i) => `<li><span>${t}</span><span class="del-btn" onclick="removeTodo(${i})">×</span></li>`).join('');
+            document.getElementById('todoList').innerHTML = tasks.map((t, i) => `<li><span>${t}</span><span style="color:red; cursor:pointer;" onclick="removeTodo(${i})">×</span></li>`).join('');
             localStorage.setItem('txTasks', JSON.stringify(tasks));
         }
         function addTodo() { const inp = document.getElementById('todoInput'); if(inp.value.trim()){ tasks.push(inp.value.trim()); inp.value=''; renderTasks(); } }
