@@ -4,170 +4,204 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Steiner Ranch Command Center</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⭐</text></svg>">
     <style>
         :root {
             --burnt-orange: #bf5700;
             --hickory: #3d2b1f;
-            --smoke: rgba(15, 15, 15, 0.96);
+            --smoke: rgba(15, 15, 15, 0.98);
             --butcher-paper: #f4e4bc;
             --warning-red: #e63946;
-            --nfl-blue: #002244;
-            --spectrum-blue: #003057;
+            --gold: #d4af37;
+            --blue-power: #00a8e8;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(var(--smoke), var(--smoke)), 
-                        url('https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=1600');
+                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600');
             background-size: cover; background-attachment: fixed;
-            color: var(--butcher-paper); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+            color: var(--butcher-paper); margin: 0; display: flex; flex-direction: column; align-items: center;
+        }
+
+        .shutdown-banner {
+            width: 100%; background: #000; color: var(--warning-red); 
+            text-align: center; padding: 12px 0; font-weight: 900; 
+            letter-spacing: 2px; border-bottom: 2px solid var(--warning-red);
+            text-transform: uppercase; font-size: 1rem;
         }
 
         .ticker-container { width: 100%; background: var(--hickory); border-bottom: 3px solid var(--burnt-orange); }
         .ticker-wrap { width: 100%; overflow: hidden; height: 40px; display: flex; align-items: center; }
-        .ticker-label { background: var(--burnt-orange); padding: 0 20px; height: 100%; display: flex; align-items: center; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.75rem; }
-        .ticker { display: flex; white-space: nowrap; padding-left: 100%; animation: ticker 90s linear infinite; }
-        .ticker-item { padding: 0 30px; color: var(--butcher-paper); text-decoration: none; font-size: 0.95rem; }
+        .ticker-label { background: var(--burnt-orange); padding: 0 20px; height: 100%; display: flex; align-items: center; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.7rem; }
+        .ticker { display: flex; white-space: nowrap; padding-left: 100%; animation: ticker 120s linear infinite; }
+        .ticker-item { padding: 0 30px; color: var(--butcher-paper); font-size: 0.9rem; }
         @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
         .content-wrap { width: 95%; max-width: 1100px; padding: 20px 0; display: flex; flex-direction: column; gap: 20px; }
+        .top-grid { display: grid; grid-template-columns: 1.2fr 1.8fr; gap: 20px; }
+        .card-base { background: rgba(25, 25, 25, 0.95); border-radius: 8px; border: 1px solid #444; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.8); }
 
-        .top-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
-        .card-base { background: rgba(30, 30, 30, 0.95); border-radius: 8px; border: 1px solid #444; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        #clock { font-size: 4rem; font-weight: bold; color: var(--burnt-orange); line-height: 1; }
+        #date { text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; opacity: 0.7; margin: 10px 0; }
 
-        #clock { font-size: 3.5rem; font-weight: bold; color: var(--burnt-orange); margin: 0; }
-        .forecast-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
-        .forecast-table td { padding: 6px; border-bottom: 1px solid #333; }
-
-        /* Traffic Map Section */
-        .map-container { position: relative; width: 100%; height: 280px; border-radius: 6px; overflow: hidden; margin-top: 10px; border: 1px solid #555; }
-
-        /* NFL Section */
-        .playoff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
-        .game-card { background: #221812; padding: 12px; border-radius: 6px; border-left: 5px solid var(--nfl-blue); }
-
-        /* Tiles */
-        .link-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        .link-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
         .tile {
-            position: relative; height: 100px; border-radius: 8px; border: 1px solid #555;
-            display: flex; align-items: flex-end; padding: 12px; text-decoration: none; color: white;
+            position: relative; height: 85px; border-radius: 6px; border: 1px solid #555;
+            display: flex; align-items: flex-end; padding: 10px; text-decoration: none; color: white;
             font-weight: bold; background-size: cover; background-position: center; transition: 0.2s; overflow: hidden;
+            background-color: #111;
         }
-        .tile:hover { transform: translateY(-3px); border-color: var(--burnt-orange); }
+        .tile:hover { transform: translateY(-3px); border-color: var(--burnt-orange); box-shadow: 0 0 15px var(--burnt-orange); }
         .tile-overlay { position: absolute; inset: 0; background: linear-gradient(transparent, rgba(0,0,0,0.9)); z-index: 1; }
-        .tile span { z-index: 2; text-shadow: 1px 1px 3px black; text-transform: uppercase; font-size: 0.75rem; }
+        .tile span { z-index: 2; text-shadow: 1px 1px 3px black; font-size: 0.65rem; text-transform: uppercase; width: 100%; }
 
-        .fb { background-image: url('https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400'); }
-        .az { background-image: url('https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?w=400'); }
-        .dr { background: #f4e4bc; color: #3d2b1f !important; }
-        .spec { background: var(--spectrum-blue); }
-        .outage { background: #000; border: 2px solid var(--warning-red); }
+        #todoList { list-style: none; padding: 0; margin: 15px 0; width: 100%; }
+        #todoList li { 
+            background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 4px; 
+            margin-bottom: 8px; display: flex; justify-content: space-between; 
+            border-left: 5px solid var(--burnt-orange); font-size: 1.1rem;
+        }
 
-        #todoList { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; list-style: none; padding: 0; }
-        #todoList li { background: var(--hickory); padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; font-size: 0.85rem; border-left: 4px solid var(--burnt-orange); }
+        .weather-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 20px; border-top: 1px solid #333; padding-top: 20px; }
+        .weather-day { text-align: center; }
+        .weather-day .day { font-size: 0.7rem; opacity: 0.6; text-transform: uppercase; margin-bottom: 5px; }
+        .weather-day .high { color: var(--gold); font-weight: bold; font-size: 1rem; }
+        .weather-day .low { opacity: 0.5; font-size: 0.8rem; }
+
+        .whip-table { width:100%; font-size:0.8rem; border-collapse:collapse; margin-top:10px; }
+        .whip-table tr { border-bottom: 1px solid #333; }
+        .whip-table td { padding: 8px 4px; }
+        .status-badge { background: #333; padding: 2px 6px; border-radius: 3px; font-size: 0.7rem; }
     </style>
 </head>
 <body>
 
+    <div class="shutdown-banner" id="shutdownCounter">⚠️ INITIALIZING COUNTDOWN...</div>
+
     <div class="ticker-container">
         <div class="ticker-wrap">
-            <div class="ticker-label">LIVE UPDATES</div>
-            <div class="ticker" id="cbsTicker"><span class="ticker-item">Monitoring Steiner Ranch conditions and RM 620 traffic...</span></div>
+            <div class="ticker-label">URGENT</div>
+            <div class="ticker">
+                <span class="ticker-item">AUSTIN ENERGY: CREWS REMAIN ON STANDBY FOR ICE-RELATED OUTAGES</span>
+                <span class="ticker-item">MINNESOTA HEARING: AG ELLISON CHALLENGES DHS FED DEPLOYMENT</span>
+                <span class="ticker-item">LEANDER ISD CLOSED JAN 26 - EXTREME COLD WARNING UNTIL NOON</span>
+                <span class="ticker-item">SUPER BOWL LX: SEAHAWKS VS PATRIOTS - LEVI'S STADIUM FEB 8</span>
+            </div>
         </div>
     </div>
 
     <div class="content-wrap">
         <div class="top-grid">
-            <div class="card-base" style="text-align:center; border: 2px solid var(--burnt-orange);">
-                <div id="clock">00:00</div>
-                <div id="date" style="text-transform:uppercase; font-size:0.8rem; opacity:0.8;">...</div>
-                <div style="margin-top:10px; font-size:1.8rem; color:var(--burnt-orange); font-weight:bold;">68°F</div>
+            <div class="card-base" style="text-align:center;">
+                <div id="clock">00:00:00</div>
+                <div id="date">JANUARY 26, 2026</div>
+                <div style="font-size: 2.5rem; font-weight: 800; color: var(--gold);" id="currentTemp">--°F</div>
+                <div style="font-size: 0.75rem; opacity: 0.6; margin-top: 5px;">STEINER RANCH, TX</div>
             </div>
 
-            <div class="card-base" style="border-left: 10px solid var(--warning-red);">
-                <h3 style="margin:0; font-size:0.9rem; color:var(--warning-red); text-transform:uppercase;">🚨 Winter Storm Briefing</h3>
-                <table class="forecast-table">
-                    <tr><td style="color:var(--burnt-orange);"><b>FRI</b></td><td>72° / 44°</td><td>Front arrives ~11PM. Drip faucets tonight.</td></tr>
-                    <tr><td style="color:var(--warning-red);"><b>SAT</b></td><td>38° / 24°</td><td><b>ICY ROADS.</b> High risk on 620/2222 hills.</td></tr>
-                    <tr><td style="color:var(--warning-red);"><b>SUN</b></td><td>31° / 18°</td><td>Arctic Blast. Perfect for Playoff Football.</td></tr>
-                </table>
-            </div>
-        </div>
-
-        <div class="card-base">
-            <h3 style="margin:0 0 10px 0; font-size:1rem; color:var(--burnt-orange); text-transform:uppercase;">🏈 Championship Sunday (Jan 25)</h3>
-            <div class="playoff-grid">
-                <div class="game-card">
-                    <div style="font-weight:bold; margin-bottom:4px;">AFC: Patriots @ Broncos</div>
-                    <div style="font-size:0.8rem; opacity:0.8;">2:00 PM CST | CBS / Paramount+</div>
-                </div>
-                <div class="game-card" style="border-left-color: #004c97;">
-                    <div style="font-weight:bold; margin-bottom:4px;">NFC: Rams @ Seahawks</div>
-                    <div style="font-size:0.8rem; opacity:0.8;">5:30 PM CST | FOX</div>
+            <div class="card-base" style="border-left: 8px solid var(--warning-red);">
+                <h3 style="margin:0; font-size:0.85rem; color:var(--warning-red); text-transform:uppercase;">🏛️ Federal Tracker & Whiplist</h3>
+                <div style="margin-top:12px; font-size:0.85rem; line-height: 1.5;">
+                    <div><b style="color:var(--gold)">MN HEARING:</b> Federal court hearing legality of "Metro Surge" operations today following weekend civil unrest.</div>
+                    
+                    <div style="margin-top:15px; border-top: 1px solid #444; padding-top:10px;">
+                        <span style="color:var(--gold); font-weight:bold; text-transform:uppercase; font-size:0.75rem;">📊 Democratic "YES" Watch (Shutdown Funding)</span>
+                        <table class="whip-table">
+                            <tr><td><b>Sherrod Brown (OH)</b></td><td><span class="status-badge">SWING</span> Under pressure to prevent Friday shutdown.</td></tr>
+                            <tr><td><b>John Hickenlooper (CO)</b></td><td><span class="status-badge">UNDECIDED</span> Reviewing DHS conduct guardrails.</td></tr>
+                            <tr><td><b>Jon Ossoff (GA)</b></td><td><span class="status-badge">LEAN NO</span> Demands body-cam transparency.</td></tr>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="card-base" style="border-left: 4px solid var(--warning-red);">
-            <h3 style="margin:0; font-size:0.85rem; color:var(--warning-red); text-transform:uppercase;">⚖️ Jack Smith Public Hearing</h3>
-            <p style="font-size:0.8rem; margin:10px 0 0 0;">
-                <b>Live Status:</b> Former Special Counsel Jack Smith defending 2020 election and documents probes before House Judiciary Committee.
-                <a href="https://www.youtube.com/watch?v=fXvU7z8jIqE" target="_blank" style="color:var(--burnt-orange); text-decoration:none; font-weight:bold; margin-left:10px;">[Watch Live]</a>
-            </p>
         </div>
 
         <div class="link-grid">
-            <a href="https://facebook.com" class="tile fb" target="_blank"><div class="tile-overlay"></div><span>Facebook</span></a>
-            <a href="https://amazon.com" class="tile az" target="_blank"><div class="tile-overlay"></div><span>Amazon</span></a>
-            <a href="https://drudgereport.com" class="tile dr" target="_blank"><span>DRUDGE REPORT</span></a>
-            <a href="https://www.spectrum.net/support/tv/troubleshooting-your-spectrum-services-after-outage" class="tile spec" target="_blank"><span>📡 Spectrum Status</span></a>
-            <a href="https://outagemap.austinenergy.com" class="tile outage" target="_blank"><span>⚡ Austin Energy</span></a>
+            <a href="https://outagemap.austinenergy.com/" class="tile" style="border: 2px solid var(--blue-power); background-image:url('https://upload.wikimedia.org/wikipedia/commons/e/ea/Power_Outage_Icon.svg'); background-size: 30%; background-repeat: no-repeat; background-position: center 25%;"><div class="tile-overlay"></div><span style="color:var(--blue-power)">Austin Outages</span></a>
+            <a href="https://drudgereport.com" class="tile" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/e/e4/Logo_of_the_Drudge_Report.png'); background-size: 70%; background-repeat: no-repeat; background-position: center 25%;"><div class="tile-overlay"></div><span>Drudge Report</span></a>
+            <a href="https://amazon.com" class="tile" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg'); background-size: 80%; background-repeat: no-repeat; background-position: center 35%;"><div class="tile-overlay"></div><span>Amazon</span></a>
+            <a href="https://facebook.com" class="tile" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg'); background-size: 35%; background-repeat: no-repeat; background-position: center 30%;"><div class="tile-overlay"></div><span>Facebook</span></a>
+            <a href="https://www.spectrum.net" class="tile" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/3/36/Spectrum_logo_2020.svg'); background-size: 80%; background-repeat: no-repeat; background-position: center 30%;"><div class="tile-overlay"></div><span>Spectrum</span></a>
         </div>
 
         <div class="card-base">
-            <h3 style="margin: 0 0 15px 0; color: var(--burnt-orange); text-transform: uppercase; font-size: 0.9rem;">Winter Prep Tasks</h3>
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <input type="text" id="todoInput" placeholder="Add custom task..." style="flex:1; background:#222; border:1px solid #444; padding:10px; color:white; border-radius:4px;">
-                <button onclick="addTodo()" style="background:var(--burnt-orange); border:none; padding:0 15px; color:white; border-radius:4px; cursor:pointer; font-weight:bold;">ADD</button>
-            </div>
+            <h3 style="margin: 0; color: var(--burnt-orange); text-transform: uppercase; font-size: 0.9rem;">Command Tasks</h3>
             <ul id="todoList"></ul>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="todoInput" placeholder="Enter objective..." style="flex:1; background:#000; border:1px solid #444; padding:15px; color:white; border-radius:4px; font-size: 1rem;">
+                <button onclick="addTodo()" style="background:var(--burnt-orange); border:none; padding:0 40px; color:white; border-radius:4px; cursor:pointer; font-weight:bold;">DEPLOY</button>
+            </div>
+        </div>
+
+        <div class="card-base">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0; color: var(--gold); text-transform: uppercase; font-size: 0.9rem;">📍 Steiner Ranch Weather Center</h3>
+                <span id="syncStatus" style="font-size: 0.6rem; opacity: 0.5;">SYNCING...</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 40px; margin-bottom: 10px;">
+                <div style="font-size: 1rem; line-height: 1.6;">
+                    <div>🌡️ Feels Like: <span id="feelsLike" style="color:white">--</span></div>
+                    <div>🌬️ Wind: <span id="windSpeed" style="color:white">--</span></div>
+                    <div>💧 Humidity: <span id="humidity" style="color:white">--</span></div>
+                </div>
+                <div style="background: rgba(212, 175, 55, 0.1); padding: 15px; border-radius: 8px; flex: 1; border: 1px solid var(--gold);">
+                    <b style="color:var(--warning-red); font-size: 0.8rem; display: block; margin-bottom: 5px;">⚠️ WEATHER ADVISORY</b>
+                    <span style="font-size: 0.85rem;">Freeze Warning active until Noon. Monitor "Austin Outages" tile if lights flicker. </span>
+                </div>
+            </div>
+
+            <div class="weather-grid" id="weatherForecast"></div>
         </div>
     </div>
 
     <script>
-        let tasks = JSON.parse(localStorage.getItem('txTasks')) || ["Drip faucets tonight", "Cover hose bibs", "Check Generator Oil", "NFL Sunday Snacks"];
+        // TASK LOGIC
+        let tasks = JSON.parse(localStorage.getItem('srTasks')) || ["Monitor Minnesota federal hearing", "Check Steiner pipe insulation - 26°F", "Prep for Friday shutdown deadline"];
         function renderTasks() {
-            document.getElementById('todoList').innerHTML = tasks.map((t, i) => `<li><span>${t}</span><span style="color:var(--warning-red); cursor:pointer;" onclick="removeTodo(${i})">×</span></li>`).join('');
-            localStorage.setItem('txTasks', JSON.stringify(tasks));
+            document.getElementById('todoList').innerHTML = tasks.map((t, i) => `<li><span>${t}</span><span style="color:var(--warning-red); cursor:pointer;" onclick="removeTodo(${i})">REDACT</span></li>`).join('');
+            localStorage.setItem('srTasks', JSON.stringify(tasks));
         }
         function addTodo() { const inp = document.getElementById('todoInput'); if(inp.value.trim()){ tasks.push(inp.value.trim()); inp.value=''; renderTasks(); } }
         function removeTodo(i) { tasks.splice(i, 1); renderTasks(); }
 
-        async function fetchNews() {
+        // WEATHER API SYNC (Open-Meteo)
+        async function updateWeather() {
+            const url = "https://api.open-meteo.com/v1/forecast?latitude=30.35&longitude=-97.92&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FChicago";
             try {
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://cbsaustin.com/news/local.rss')}`);
-                const data = await response.json();
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-                const items = xmlDoc.querySelectorAll("item");
-                let html = "";
-                items.forEach((item, i) => { if (i < 8) html += `<a href="${item.querySelector("link").textContent}" class="ticker-item" target="_blank">★ ${item.querySelector("title").textContent}</a>`; });
-                document.getElementById('cbsTicker').innerHTML = html;
-            } catch (e) { document.getElementById('cbsTicker').innerHTML = "News offline."; }
+                const res = await fetch(url);
+                const data = await res.json();
+                document.getElementById('currentTemp').innerText = Math.round(data.current.temperature_2m) + "°F";
+                document.getElementById('feelsLike').innerText = Math.round(data.current.apparent_temperature) + "°F";
+                document.getElementById('windSpeed').innerText = Math.round(data.current.wind_speed_10m) + " mph";
+                document.getElementById('humidity').innerText = data.current.relative_humidity_2m + "%";
+                
+                let forecastHTML = '';
+                const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+                for(let i=0; i<7; i++) {
+                    const d = new Date(); d.setDate(d.getDate() + i);
+                    forecastHTML += `<div class="weather-day"><div class="day">${dayNames[d.getDay()]}</div><div class="high">${Math.round(data.daily.temperature_2m_max[i])}°</div><div class="low">${Math.round(data.daily.temperature_2m_min[i])}°</div></div>`;
+                }
+                document.getElementById('weatherForecast').innerHTML = forecastHTML;
+                document.getElementById('syncStatus').innerText = "LAST SYNC: " + new Date().toLocaleTimeString();
+            } catch (e) { console.error("Weather Sync Failed"); }
         }
 
-        function updateTime() {
+        // CLOCK & SHUTDOWN LOGIC
+        function updateUI() {
             const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            document.getElementById('date').textContent = now.toLocaleDateString([], {weekday: 'long', month: 'long', day: 'numeric'});
+            document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour12: false});
+            const deadline = new Date("January 31, 2026 00:00:00").getTime();
+            const diff = deadline - now.getTime();
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('shutdownCounter').innerText = `⚠️ SHUTDOWN DEADLINE: ${d} DAYS, ${h} HOURS, ${m} MINS REMAINING`;
         }
 
-        setInterval(updateTime, 1000); updateTime(); fetchNews(); renderTasks();
+        setInterval(updateUI, 1000);
+        setInterval(updateWeather, 1800000);
+        updateUI(); updateWeather(); renderTasks();
     </script>
 </body>
 </html>
-
-
-
-
