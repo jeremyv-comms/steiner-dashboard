@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Steiner Ranch Command Center</title>
-	<meta name="robots" content="noindex, nofollow">
+    
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <meta name="googlebot" content="noindex, nofollow, nosnippet">
+    <meta name="google" content="notranslate">
 
-	<meta name="googlebot" content="noindex, nofollow, nosnippet, noarchive">
-
-	<meta name="google" content="notranslate">
-    <style>        
+    <style>
         :root {
             --burnt-orange: #bf5700;
             --hickory: #3d2b1f;
@@ -35,10 +35,44 @@
             text-transform: uppercase; font-size: 1rem;
         }
 
-        .ticker-container { width: 100%; background: var(--hickory); border-bottom: 3px solid var(--burnt-orange); }
-        .ticker-wrap { width: 100%; overflow: hidden; height: 40px; display: flex; align-items: center; }
-        .ticker-label { background: var(--burnt-orange); padding: 0 20px; height: 100%; display: flex; align-items: center; font-weight: bold; color: white; text-transform: uppercase; font-size: 0.7rem; }
-        .ticker { display: flex; white-space: nowrap; padding-left: 100%; animation: ticker 120s linear infinite; }
+        /* FIXED TICKER CONTAINER */
+        .ticker-container { 
+            width: 100%; 
+            background: var(--hickory); 
+            border-bottom: 3px solid var(--burnt-orange); 
+            position: relative;
+            z-index: 10;
+        }
+        .ticker-wrap { 
+            width: 100%; 
+            overflow: hidden; 
+            height: 40px; 
+            display: flex; 
+            align-items: center; 
+            position: relative;
+        }
+        .ticker-label { 
+            background: var(--burnt-orange); 
+            padding: 0 20px; 
+            height: 100%; 
+            display: flex; 
+            align-items: center; 
+            font-weight: bold; 
+            color: white; 
+            text-transform: uppercase; 
+            font-size: 0.7rem; 
+            position: relative; 
+            z-index: 5; /* Higher than ticker text */
+            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+        }
+        .ticker { 
+            display: flex; 
+            white-space: nowrap; 
+            padding-left: 20px; 
+            animation: ticker 90s linear infinite; 
+            position: relative;
+            z-index: 1; /* Lower than label */
+        }
         .ticker-item { padding: 0 30px; color: var(--butcher-paper); font-size: 0.9rem; }
         @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
@@ -76,7 +110,10 @@
         .whip-table { width:100%; font-size:0.8rem; border-collapse:collapse; margin-top:10px; }
         .whip-table tr { border-bottom: 1px solid #333; }
         .whip-table td { padding: 8px 4px; }
-        .status-badge { background: #333; padding: 2px 6px; border-radius: 3px; font-size: 0.7rem; }
+        .status-badge { background: #333; padding: 2px 6px; border-radius: 3px; font-size: 0.7rem; font-weight: bold; }
+        
+        /* Security Log Styles */
+        .log-list { font-family: monospace; font-size: 0.75rem; color: #888; height: 80px; overflow-y: auto; background: #000; padding: 10px; border-radius: 4px; border: 1px solid #222; }
     </style>
 </head>
 <body>
@@ -87,10 +124,11 @@
         <div class="ticker-wrap">
             <div class="ticker-label">URGENT</div>
             <div class="ticker">
-                <span class="ticker-item">AUSTIN ENERGY: CREWS REMAIN ON STANDBY FOR ICE-RELATED OUTAGES</span>
-                <span class="ticker-item">MINNESOTA HEARING: AG ELLISON CHALLENGES DHS FED DEPLOYMENT</span>
-                <span class="ticker-item">LEANDER ISD CLOSED JAN 26 - EXTREME COLD WARNING UNTIL NOON</span>
-                <span class="ticker-item">SUPER BOWL LX: SEAHAWKS VS PATRIOTS - LEVI'S STADIUM FEB 8</span>
+                <span class="ticker-item">AUSTIN ENERGY: CREWS RESPONDING TO ISOLATED OUTAGES IN 78723 & 78731</span>
+                <span class="ticker-item">SENATE: SCHUMER REJECTS DHS FUNDING BILL FOLLOWING PRETTI SHOOTING</span>
+                <span class="ticker-item">MN AG ELLISON: DISCOVERY PHASE BEGINS IN FEDERAL OCCUPATION CHALLENGE</span>
+                <span class="ticker-item">WEATHER: EXTREME COLD WARNING UNTIL NOON MON JAN 26 - AVOID RM 620</span>
+                <span class="ticker-item">HOUSE RECESS UNTIL FEBRUARY - NO PATH TO SPLIT DHS FUNDING FROM PACKAGE</span>
             </div>
         </div>
     </div>
@@ -102,19 +140,24 @@
                 <div id="date">JANUARY 26, 2026</div>
                 <div style="font-size: 2.5rem; font-weight: 800; color: var(--gold);" id="currentTemp">--°F</div>
                 <div style="font-size: 0.75rem; opacity: 0.6; margin-top: 5px;">STEINER RANCH, TX</div>
+                
+                <div style="margin-top: 20px; text-align: left;">
+                    <span style="font-size: 0.6rem; color: var(--warning-red); text-transform: uppercase; font-weight: bold;">🔐 Terminal Access Log</span>
+                    <div id="accessLog" class="log-list"></div>
+                </div>
             </div>
 
             <div class="card-base" style="border-left: 8px solid var(--warning-red);">
                 <h3 style="margin:0; font-size:0.85rem; color:var(--warning-red); text-transform:uppercase;">🏛️ Federal Tracker & Whiplist</h3>
                 <div style="margin-top:12px; font-size:0.85rem; line-height: 1.5;">
-                    <div><b style="color:var(--gold)">MN HEARING:</b> Federal court hearing legality of "Metro Surge" operations today following weekend civil unrest.</div>
+                    <div><b style="color:var(--gold)">SHUTDOWN STATUS:</b> Senate Dems reject $64.4B DHS bill. With House in recess, a partial shutdown on Jan 31 is currently the baseline scenario.</div>
                     
                     <div style="margin-top:15px; border-top: 1px solid #444; padding-top:10px;">
-                        <span style="color:var(--gold); font-weight:bold; text-transform:uppercase; font-size:0.75rem;">📊 Democratic "YES" Watch (Shutdown Funding)</span>
+                        <span style="color:var(--gold); font-weight:bold; text-transform:uppercase; font-size:0.75rem;">📊 Moderate "YES" Watch (Votes needed: 7-8)</span>
                         <table class="whip-table">
-                            <tr><td><b>Sherrod Brown (OH)</b></td><td><span class="status-badge">SWING</span> Under pressure to prevent Friday shutdown.</td></tr>
-                            <tr><td><b>John Hickenlooper (CO)</b></td><td><span class="status-badge">UNDECIDED</span> Reviewing DHS conduct guardrails.</td></tr>
-                            <tr><td><b>Jon Ossoff (GA)</b></td><td><span class="status-badge">LEAN NO</span> Demands body-cam transparency.</td></tr>
+                            <tr><td><b>Sherrod Brown (OH)</b></td><td><span class="status-badge" style="color:#ffc107;">AT RISK</span> Under pressure from unions to keep ports open.</td></tr>
+                            <tr><td><b>Jon Ossoff (GA)</b></td><td><span class="status-badge" style="color:var(--warning-red);">LEAN NO</span> Demands strict ICE body-cam mandates.</td></tr>
+                            <tr><td><b>John Hickenlooper (CO)</b></td><td><span class="status-badge" style="color:#5bc0de;">UNDECIDED</span> Seeking middle-ground funding for FEMA/TSA.</td></tr>
                         </table>
                     </div>
                 </div>
@@ -151,18 +194,31 @@
                     <div>💧 Humidity: <span id="humidity" style="color:white">--</span></div>
                 </div>
                 <div style="background: rgba(212, 175, 55, 0.1); padding: 15px; border-radius: 8px; flex: 1; border: 1px solid var(--gold);">
-                    <b style="color:var(--warning-red); font-size: 0.8rem; display: block; margin-bottom: 5px;">⚠️ WEATHER ADVISORY</b>
-                    <span style="font-size: 0.85rem;">Freeze Warning active until Noon. Monitor "Austin Outages" tile if lights flicker. </span>
+                    <b style="color:var(--warning-red); font-size: 0.8rem; display: block; margin-bottom: 5px;">⚠️ WINTER STORM ADVISORY</b>
+                    <span style="font-size: 0.85rem;">Hard freeze until noon. Highs only reach 34°F. Ice melting/refreezing may snap limbs. </span>
                 </div>
             </div>
-
             <div class="weather-grid" id="weatherForecast"></div>
         </div>
     </div>
 
     <script>
+        // SECURITY LOG LOGIC
+        function logAccess() {
+            const logEl = document.getElementById('accessLog');
+            let history = JSON.parse(localStorage.getItem('sr_access_log')) || [];
+            const now = new Date();
+            const entry = `${now.toLocaleDateString()} ${now.toLocaleTimeString()} - SESSION_INIT`;
+            
+            history.unshift(entry); // Add to top
+            if(history.length > 20) history.pop(); // Keep last 20
+            
+            localStorage.setItem('sr_access_log', JSON.stringify(history));
+            logEl.innerHTML = history.map(item => `<div>> ${item}</div>`).join('');
+        }
+
         // TASK LOGIC
-        let tasks = JSON.parse(localStorage.getItem('srTasks')) || ["Monitor Minnesota federal hearing", "Check Steiner pipe insulation - 26°F", "Prep for Friday shutdown deadline"];
+        let tasks = JSON.parse(localStorage.getItem('srTasks')) || ["Monitor Minnesota federal hearing", "Check pipe insulation", "Track Senate DHS votes"];
         function renderTasks() {
             document.getElementById('todoList').innerHTML = tasks.map((t, i) => `<li><span>${t}</span><span style="color:var(--warning-red); cursor:pointer;" onclick="removeTodo(${i})">REDACT</span></li>`).join('');
             localStorage.setItem('srTasks', JSON.stringify(tasks));
@@ -170,7 +226,7 @@
         function addTodo() { const inp = document.getElementById('todoInput'); if(inp.value.trim()){ tasks.push(inp.value.trim()); inp.value=''; renderTasks(); } }
         function removeTodo(i) { tasks.splice(i, 1); renderTasks(); }
 
-        // WEATHER API SYNC (Open-Meteo)
+        // WEATHER API SYNC
         async function updateWeather() {
             const url = "https://api.open-meteo.com/v1/forecast?latitude=30.35&longitude=-97.92&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FChicago";
             try {
@@ -206,8 +262,7 @@
 
         setInterval(updateUI, 1000);
         setInterval(updateWeather, 1800000);
-        updateUI(); updateWeather(); renderTasks();
+        updateUI(); updateWeather(); renderTasks(); logAccess();
     </script>
 </body>
 </html>
-
